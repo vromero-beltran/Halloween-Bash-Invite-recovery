@@ -9,7 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel+Decorative:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"> 
         <!-- FontAwesome for spooky icons --> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="style.css">
     </head> 
     <body class="min-h-screen relative flex flex-col items-center justify-between p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-950 via-gray-950 to-black"> 
     <!-- Floating Bats and Spiders Background overlay --> 
@@ -17,11 +17,9 @@
         <!-- Full Moon --> 
             <div class="absolute top-10 right-10 w-32 h-32 md:w-48 md:h-48 rounded-full bg-amber-100 opacity-20 shadow-[0_0_60px_#fef08a] blur-[1px]">
             </div> 
-            <!-- Headless Horseman Silhouette Crossing --> 
-            <div class="absolute top-24 left-0 w-full horseman-container opacity-50 z-0"> 
-                <svg class="w-48 h-32 fill-purple-400 drop-shadow-[0_0_10px_#9333ea]" viewBox="0 0 24 24"> 
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.04 3 5.5l.33.33C3.5 16.5 2 18.5 2 21h2c0-2.21 1.79-4 4-4 1.1 0 2-.45 2.75-1.25L12 17.5l1.25-1.75C14 16.55 14.9 17 16 17c2.21 0 4 1.79 4 4h2c0-2.5-1.5-4.5-3.33-6.67L19 14M9.5 8.5A1.5 1.5 0 1 1 11 10a1.5 1.5 0 0 1-1.5-1.5Z"/>
-                </svg> 
+            <!-- Red Riding Hood chasing the wolf crossing the scene --> 
+            <div class="absolute top-24 left-0 w-full horseman-container opacity-70 z-0">
+                <img src="assets/red-riding-hood-wolf.png" alt="Red Riding Hood chasing the wolf with an axe" class="red-riding-hood-scene">
             </div> 
             <!-- Fog Layers --> 
             <div class="absolute bottom-0 left-0 w-[200%] h-40 fog-layer opacity-40">
@@ -35,6 +33,12 @@
             <p class="font-cinzel text-purple-300 text-sm md:text-base tracking-wider mt-1 animate-flicker"> 
                 The spirits have awakened... Will you answer the call? 
             </p> 
+            <button id="musicToggle" type="button" onclick="toggleHalloweenMusic()" aria-pressed="false" class="mt-4 inline-flex items-center gap-2 rounded-full border border-purple-500/70 bg-purple-950/70 px-4 py-2 text-sm font-semibold text-purple-100 shadow-[0_0_15px_rgba(147,51,234,0.3)] transition hover:border-orange-400 hover:text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <i id="musicToggleIcon" class="fa-solid fa-play" aria-hidden="true"></i>
+                <span id="musicToggleLabel">Play Halloween music</span>
+            </button>
+            <p id="musicStatus" class="mt-1 text-xs text-purple-300/80" aria-live="polite">Press play for spooky music</p>
+            <audio id="halloweenAudio" src="assets/whisper-of-ghost-monument-music-main-version-45681-02-11.mp3" preload="metadata" loop></audio>
         </header> 
         <!-- Main Interactive Envelope Section --> 
         <main class="z-10 flex flex-col items-center justify-center my-auto py-6"> 
@@ -67,7 +71,7 @@
                             Tap to reveal full dark details
                         </p> 
                         <div class="mt-2 text-xs font-semibold text-purple-900 bg-amber-200/60 px-2 py-0.5 rounded border border-amber-400">
-                            October 31st • Midnight 
+                            October 30th • Midnight 
                         </div> 
                     </div> 
                     <!-- Pocket front --> 
@@ -127,7 +131,7 @@
                                 Date
                             </div>
                             <div class="font-bold text-sm text-amber-200">
-                                Saturday, October 31, 2026
+                                Saturday, October 30th, 2026
                             </div> 
                         </div> 
                     </div> 
@@ -141,7 +145,7 @@
                                 Time
                             </div> 
                             <div class="font-bold text-sm text-amber-200">
-                                8:00 PM Until the Witching Hour
+                                7:00 PM Until the Witching Hour
                             </div> 
                         </div> 
                     </div> 
@@ -155,14 +159,14 @@
                                 Location
                             </div> 
                             <div class="font-bold text-sm text-amber-200">
-                                The Hollow Manor, 666 Ghost Lane
+                                5457 Fiddler Cove Way, Sacramento CA, 95835
                             </div> 
                         </div> 
                     </div> 
                 </div> 
                 <!-- Spooky Note --> 
                 <p class="text-center text-xs text-gray-300 italic mb-6"> 
-                    Costumes are strictly mandatory! Beware of the Headless Horseman roaming the woods outside. Drinks, potions, and graveyard snacks will be served. 
+                    Costumes are strictly mandatory! Shoes are allowed inside the house. Potluck style! Bring a dish or drinks to share with the spirits. 
                 </p> 
                 <!-- Action Buttons --> 
                 <div class="flex gap-3"> 
@@ -179,7 +183,7 @@
         </div> 
         <!-- RSVP Modal --> 
         <div id="rsvpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300"> 
-            <div class="bg-[#150a21] border-2 border-purple-500 rounded-2xl max-w-md w-full p-6 shadow-[0_0_40px_rgba(147,51,234,0.5)] relative"> 
+            <div class="bg-[#150a21] border-2 border-purple-500 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 shadow-[0_0_40px_rgba(147,51,234,0.5)] relative"> 
                 <button onclick="closeRSVPModal()" class="absolute top-4 right-4 text-gray-400 hover:text-orange-400 text-xl"> 
                     <i class="fa-solid fa-xmark">
                     </i> 
@@ -219,8 +223,15 @@
                         </label> 
                         <input type="text" id="guestCostume" class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. Zombie Bride, Witch, Skeleton"> 
                     </div> 
+                    <div>
+                        <label for="guestPotluck" class="block text-xs font-semibold text-purple-300 uppercase mb-1">
+                            What will you bring to the potluck? (Required)
+                        </label>
+                        <input type="text" id="guestPotluck" required pattern=".*\S.*" title="Please enter what you plan to bring." class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. a spooky dessert, chips, or drinks">
+                    </div>
                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-all mt-2"> 
                         Submit RSVP to the Spirits 
+                    </button>
                 </form> 
             </div> 
         </div> 
@@ -240,36 +251,195 @@
         <footer class="z-10 text-center py-4 text-xs text-purple-400/70"> 
                 Created for a spooktacular night • Happy Halloween 2026 
         </footer> 
-        <script> 
-            // JavaScript logic for opening envelope and handling modals let isOpened = false; function openEnvelope() { if (isOpened) { 
-            // // If already open, open the full modal openModal(); return; } const envelope = document.getElementById('envelope'); 
-            // const instruction = document.getElementById('instruction-text'); const actionButtons = 
-            // document.getElementById('action-buttons'); envelope.classList.add('open'); isOpened = true; 
-            // Update instruction text if (instruction) { instruction.innerHTML = '<i class="fa-solid fa-sparkles text-amber-400"></i> 
-            // The letter has been unsealed!'; instruction.classList.remove('animate-bounce'); } // 
-            // Show action buttons after animation settles setTimeout(() => { if (actionButtons) { actionButtons.classList.remove('hidden'); 
-            // actionButtons.classList.add('flex'); } // Automatically show full modal after envelope animation openModal(); }, 800); } 
-            // function resetEnvelope() { const envelope = document.getElementById('envelope'); const instruction = 
-            // document.getElementById('instruction-text'); const actionButtons = document.getElementById('action-buttons'); 
-            // envelope.classList.remove('open'); isOpened = false; if (instruction) { instruction.innerHTML = '<i class="fa-solid fa-hand-pointer text-orange-400">
-            // </i> Click the wax seal to open your invitation!'; instruction.classList.add('animate-bounce'); } if (actionButtons) 
-            // { actionButtons.classList.add('hidden'); actionButtons.classList.remove('flex'); } closeModal(); } function openModal() { 
-            // const modal = document.getElementById('invitationModal'); const modalContent = document.getElementById('modalContent'); 
-            // if (modal && modalContent) { modal.classList.remove('opacity-0', 'pointer-events-none'); modalContent.classList.remove('scale-95'); 
-            // modalContent.classList.add('scale-100'); } } function closeModal() { const modal = document.getElementById('invitationModal'); 
-            // const modalContent = document.getElementById('modalContent'); if (modal && modalContent) { modal.classList.add('opacity-0', 
-            // 'pointer-events-none'); modalContent.classList.remove('scale-100'); modalContent.classList.add('scale-95'); } } function openRSVPModal() { 
-            // closeModal(); const rsvpModal = document.getElementById('rsvpModal'); if (rsvpModal) { rsvpModal.classList.remove('opacity-0', 
-            // 'pointer-events-none'); } } function closeRSVPModal() { const rsvpModal = document.getElementById('rsvpModal'); if (rsvpModal) { 
-            // rsvpModal.classList.add('opacity-0', 'pointer-events-none'); } } function submitRSVP(event) { event.preventDefault(); const name = 
-            // document.getElementById('guestName').value; const status = document.getElementById('guestStatus').value; closeRSVPModal(); 
-            // Show Custom Toast const toast = document.getElementById('toast'); const toastTitle = document.getElementById('toastTitle'); 
-            // const toastDesc = document.getElementById('toastDesc'); if (status === 'attending') { toastTitle.innerText = `Welcome to the Coven, 
-            // ${name}!`; toastDesc.innerText = 'Your RSVP is logged in the Book of the Dead.'; } else if (status === 'maybe') { toastTitle.innerText = 
-            // `The spirits await your decision, ${name}...`; toastDesc.innerText = 'Make up your mind before the moon sets!'; } else { 
-            // toastTitle.innerText = `A coward flees, ${name}!`; toastDesc.innerText = 'The ghosts will haunt your dreams tonight.'; } 
-            // toast.classList.remove('translate-y-32', 'opacity-0'); setTimeout(() => { toast.classList.add('translate-y-32', 'opacity-0'); }, 5000); 
-            // document.getElementById('rsvpForm').reset(); } 
-        </script> 
+        <script>
+            let isOpened = false;
+
+            async function toggleHalloweenMusic() {
+                const button = document.getElementById('musicToggle');
+                const icon = document.getElementById('musicToggleIcon');
+                const label = document.getElementById('musicToggleLabel');
+                const status = document.getElementById('musicStatus');
+                const audio = document.getElementById('halloweenAudio');
+                if (!button || !icon || !label || !status || !audio) return;
+
+                if (!audio.paused) {
+                    audio.pause();
+                    button.setAttribute('aria-pressed', 'false');
+                    icon.className = 'fa-solid fa-play';
+                    label.textContent = 'Play Halloween music';
+                    status.textContent = 'Music is paused';
+                    return;
+                }
+
+                try {
+                    await audio.play();
+                    button.setAttribute('aria-pressed', 'true');
+                    icon.className = 'fa-solid fa-pause';
+                    label.textContent = 'Pause Halloween music';
+                    status.textContent = 'Playing Whisper of Ghost Monument';
+                } catch (error) {
+                    status.textContent = 'Could not play the audio file. Check that it is available in the assets folder.';
+                    console.error('Unable to play Halloween music:', error);
+                }
+            }
+
+            function openEnvelope() {
+                if (isOpened) {
+                    openModal();
+                    return;
+                }
+
+                const envelope = document.getElementById('envelope');
+                const instruction = document.getElementById('instruction-text');
+                const actionButtons = document.getElementById('action-buttons');
+
+                if (envelope) envelope.classList.add('open');
+                isOpened = true;
+
+                if (instruction) {
+                    instruction.innerHTML = '<i class="fa-solid fa-sparkles text-amber-400"></i> The letter has been unsealed!';
+                    instruction.classList.remove('animate-bounce');
+                }
+
+                setTimeout(() => {
+                    if (actionButtons) {
+                        actionButtons.classList.remove('hidden');
+                        actionButtons.classList.add('flex');
+                    }
+                    openModal();
+                }, 800);
+            }
+
+            function resetEnvelope() {
+                const envelope = document.getElementById('envelope');
+                const instruction = document.getElementById('instruction-text');
+                const actionButtons = document.getElementById('action-buttons');
+
+                if (envelope) envelope.classList.remove('open');
+                isOpened = false;
+
+                if (instruction) {
+                    instruction.innerHTML = '<i class="fa-solid fa-hand-pointer text-orange-400"></i> Click the wax seal to open your invitation!';
+                    instruction.classList.add('animate-bounce');
+                }
+
+                if (actionButtons) {
+                    actionButtons.classList.add('hidden');
+                    actionButtons.classList.remove('flex');
+                }
+
+                closeModal();
+            }
+
+            function openModal() {
+                const modal = document.getElementById('invitationModal');
+                const modalContent = document.getElementById('modalContent');
+
+                if (modal && modalContent) {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('scale-95');
+                    modalContent.classList.add('scale-100');
+                }
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('invitationModal');
+                const modalContent = document.getElementById('modalContent');
+
+                if (modal && modalContent) {
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('scale-100');
+                    modalContent.classList.add('scale-95');
+                }
+            }
+
+            function openRSVPModal() {
+                closeModal();
+                const rsvpModal = document.getElementById('rsvpModal');
+                if (rsvpModal) {
+                    rsvpModal.classList.remove('opacity-0', 'pointer-events-none');
+                }
+            }
+
+            function closeRSVPModal() {
+                const rsvpModal = document.getElementById('rsvpModal');
+                if (rsvpModal) {
+                    rsvpModal.classList.add('opacity-0', 'pointer-events-none');
+                }
+            }
+
+            async function submitRSVP(event) {
+                event.preventDefault();
+                const name = document.getElementById('guestName')?.value?.trim() || 'Mortal';
+                const status = document.getElementById('guestStatus')?.value || 'attending';
+                const costume = document.getElementById('guestCostume')?.value?.trim() || 'Not provided';
+                const potluck = document.getElementById('guestPotluck')?.value?.trim() || '';
+                const toast = document.getElementById('toast');
+                const toastTitle = document.getElementById('toastTitle');
+                const toastDesc = document.getElementById('toastDesc');
+                const rsvpForm = document.getElementById('rsvpForm');
+                const submitButton = rsvpForm?.querySelector('button[type="submit"]');
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Sending RSVP...';
+                }
+
+                try {
+                    const response = await fetch('https://formsubmit.co/ajax/frozen711.vr.vr@gmail.com', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                        body: JSON.stringify({
+                            _subject: 'Halloween Bash RSVP',
+                            name,
+                            Attendance: status,
+                            Costume: costume,
+                            Potluck: potluck
+                        })
+                    });
+                    const result = await response.json();
+                    if (!response.ok || (result.success !== true && result.success !== 'true')) {
+                        throw new Error(result.message || 'Email service rejected the RSVP.');
+                    }
+
+                    closeRSVPModal();
+                    if (toastTitle && toastDesc) {
+                        if (status === 'attending') {
+                            toastTitle.innerText = `Welcome to the Coven, ${name}!`;
+                            toastDesc.innerText = 'Your RSVP has been sent to the host.';
+                        } else if (status === 'maybe') {
+                            toastTitle.innerText = `The spirits await your decision, ${name}...`;
+                            toastDesc.innerText = 'Your RSVP has been sent to the host.';
+                        } else {
+                            toastTitle.innerText = `A coward flees, ${name}!`;
+                            toastDesc.innerText = 'Your RSVP has been sent to the host.';
+                        }
+                    }
+
+                    if (toast) {
+                        toast.classList.remove('translate-y-32', 'opacity-0');
+                        setTimeout(() => toast.classList.add('translate-y-32', 'opacity-0'), 5000);
+                    }
+                    if (rsvpForm) rsvpForm.reset();
+                } catch (error) {
+                    if (toastTitle && toastDesc) {
+                        toastTitle.innerText = 'RSVP could not be sent';
+                        toastDesc.innerText = error instanceof Error
+                            ? error.message
+                            : 'Please try again in a moment.';
+                    }
+                    if (toast) {
+                        toast.classList.remove('translate-y-32', 'opacity-0');
+                        setTimeout(() => toast.classList.add('translate-y-32', 'opacity-0'), 5000);
+                    }
+                    console.error('Unable to send RSVP email:', error);
+                } finally {
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Submit RSVP to the Spirits';
+                    }
+                }
+            }
+        </script>
     </body> 
 </html>

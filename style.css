@@ -53,7 +53,18 @@ body {
 } 
 .horseman-container { 
     animation: horseman-ride 12s linear infinite; 
-} /* Envelope 3D Styling */ 
+}
+
+.red-riding-hood-scene {
+    width: min(32vw, 260px);
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(236, 72, 153, 0.45));
+    transform: translateY(8px);
+    opacity: 0.9;
+}
+/* Envelope 3D Styling */ 
 .envelope-wrapper { 
     perspective: 1000px; cursor: pointer; 
 } 
