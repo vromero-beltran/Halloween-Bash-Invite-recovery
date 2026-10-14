@@ -1,0 +1,445 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>You're Invited... If You Dare!</title> 
+        <!-- Tailwind CSS for modern utility classes --> 
+        <script src="https://cdn.tailwindcss.com"></script> <!-- Google Fonts for spooky typography --> 
+        <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel+Decorative:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"> 
+        <!-- FontAwesome for spooky icons --> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="style.css">
+    </head> 
+    <body class="min-h-screen relative flex flex-col items-center justify-between p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-950 via-gray-950 to-black"> 
+    <!-- Floating Bats and Spiders Background overlay --> 
+        <div class="absolute inset-0 pointer-events-none overflow-hidden z-0"> 
+        <!-- Full Moon --> 
+            <div class="absolute top-10 right-10 w-32 h-32 md:w-48 md:h-48 rounded-full bg-amber-100 opacity-20 shadow-[0_0_60px_#fef08a] blur-[1px]">
+            </div> 
+            <!-- Red Riding Hood chasing the wolf crossing the scene --> 
+            <div class="absolute top-24 left-0 w-full horseman-container opacity-70 z-0">
+                <img src="assets/red-riding-hood-wolf.png" alt="Red Riding Hood chasing the wolf with an axe" class="red-riding-hood-scene">
+            </div> 
+            <!-- Fog Layers --> 
+            <div class="absolute bottom-0 left-0 w-[200%] h-40 fog-layer opacity-40">
+            </div> 
+        </div> 
+        <!-- Header Title --> 
+        <header class="z-10 text-center mt-6 mb-2"> 
+            <h1 class="font-creepster text-5xl md:text-7xl text-orange-500 animate-pulse-glow tracking-widest"> 
+                HALLOWEEN BASH 2026 
+            </h1> 
+            <p class="font-cinzel text-purple-300 text-sm md:text-base tracking-wider mt-1 animate-flicker"> 
+                The spirits have awakened... Will you answer the call? 
+            </p> 
+            <button id="musicToggle" type="button" onclick="toggleHalloweenMusic()" aria-pressed="false" class="mt-4 inline-flex items-center gap-2 rounded-full border border-purple-500/70 bg-purple-950/70 px-4 py-2 text-sm font-semibold text-purple-100 shadow-[0_0_15px_rgba(147,51,234,0.3)] transition hover:border-orange-400 hover:text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <i id="musicToggleIcon" class="fa-solid fa-play" aria-hidden="true"></i>
+                <span id="musicToggleLabel">Play Halloween music</span>
+            </button>
+            <p id="musicStatus" class="mt-1 text-xs text-purple-300/80" aria-live="polite">Press play for spooky music</p>
+            <audio id="halloweenAudio" src="assets/whisper-of-ghost-monument-music-main-version-45681-02-11.mp3" preload="metadata" loop></audio>
+        </header> 
+        <!-- Main Interactive Envelope Section --> 
+        <main class="z-10 flex flex-col items-center justify-center my-auto py-6"> 
+        <!-- Instruction Tooltip --> 
+            <div id="instruction-text" class="mb-6 px-4 py-2 bg-purple-900/60 border border-purple-500/50 rounded-full text-purple-200 text-sm font-semibold tracking-wide shadow-lg animate-bounce flex items-center gap-2"> 
+                <i class="fa-solid fa-hand-pointer text-orange-400">
+                </i> 
+                Click the wax seal to open your invitation! 
+            </div> 
+            <div class="envelope-wrapper my-4" id="envelopeWrapper" onclick="openEnvelope()"> 
+                <div class="envelope" id="envelope"> 
+                <!-- Envelope Flap --> 
+                    <div class="envelope-flap">
+                    </div> 
+                    <!-- Wax Seal --> 
+                    <div class="absolute top-[90px] left-1/2 -translate-x-1/2 z-50"> 
+                        <div class="wax-seal"> 
+                            <i class="fa-solid fa-skull text-amber-200 text-xl"></i> 
+                        </div> 
+                    </div> 
+                    <!-- Mini preview card inside pocket --> 
+                    <div class="invitation-card"> 
+                        <div class="text-[10px] uppercase font-bold text-amber-900 tracking-widest">
+                            Secret Invitation
+                        </div> 
+                        <h3 class="font-creepster text-xl text-orange-600 my-1">
+                            The Manor Awaits
+                        </h3> 
+                        <p class="text-[11px] text-gray-700 italic">
+                            Tap to reveal full dark details
+                        </p> 
+                        <div class="mt-2 text-xs font-semibold text-purple-900 bg-amber-200/60 px-2 py-0.5 rounded border border-amber-400">
+                            October 30th • Midnight 
+                        </div> 
+                    </div> 
+                    <!-- Pocket front --> 
+                    <div class="envelope-pocket"> 
+                        <div class="text-orange-400/30 font-creepster text-2xl tracking-widest">
+                            DO NOT OPEN
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+            <!-- Controls / Reset Button --> 
+            <div id="action-buttons" class="hidden mt-6 flex gap-4 animate-fadeIn"> 
+                <button onclick="resetEnvelope()" class="px-5 py-2.5 bg-purple-900 hover:bg-purple-800 text-purple-200 border border-purple-500 rounded-lg text-sm font-semibold transition-all shadow-[0_0_15px_rgba(147,51,234,0.4)] flex items-center gap-2"> 
+                    <i class="fa-solid fa-rotate-left">
+                    </i> 
+                </button> 
+                <button onclick="openRSVPModal()" class="px-6 py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white rounded-lg text-sm font-bold transition-all shadow-[0_0_20px_rgba(249,115,22,0.6)] flex items-center gap-2"> 
+                    <i class="fa-solid fa-ghost">
+                    </i> 
+                    RSVP Now 
+                </button> 
+            </div> 
+        </main> 
+        <!-- Full Invitation Modal (Appears after opening) --> 
+        <div id="invitationModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-500"> 
+            <div class="bg-[#150a21] border-2 border-orange-500/80 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-[0_0_50px_rgba(255,102,0,0.4)] relative transform scale-95 transition-transform duration-500" id="modalContent"> 
+            <!-- Close Button --> 
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-orange-400 text-xl transition-colors"> 
+                    <i class="fa-solid fa-xmark">
+                    </i> 
+                </button> 
+                <!-- Card Header Icons --> 
+                <div class="flex justify-center items-center gap-4 text-orange-500 text-2xl mb-3"> 
+                    <i class="fa-solid fa-spider animate-float">
+                    </i> 
+                    <i class="fa-solid fa-skull animate-pulse">
+                    </i> 
+                    <i class="fa-solid fa-spider animate-float" style="animation-delay: 2s;">
+                    </i> 
+                </div> 
+                <!-- Invitation Title --> 
+                <h2 class="font-creepster text-4xl text-center text-orange-500 tracking-wider mb-1 animate-pulse-glow"> 
+                    YOU ARE SUMMONED 
+                </h2> 
+                <p class="text-center font-cinzel text-purple-300 text-xs tracking-widest mb-6 uppercase"> 
+                    To a Night of Eternal Terrors 
+                </p> 
+                <!-- Event Details Grid --> 
+                <div class="bg-purple-950/50 border border-purple-800/60 rounded-xl p-4 mb-6 space-y-3"> 
+                    <div class="flex items-center gap-3 text-purple-200"> 
+                        <div class="w-10 h-10 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-orange-400"> 
+                            <i class="fa-solid fa-calendar-days">
+                            </i> 
+                        </div> 
+                        <div> 
+                            <div class="text-xs text-gray-400 uppercase font-semibold">
+                                Date
+                            </div>
+                            <div class="font-bold text-sm text-amber-200">
+                                Saturday, October 30th, 2026
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="flex items-center gap-3 text-purple-200"> 
+                        <div class="w-10 h-10 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-orange-400"> 
+                            <i class="fa-solid fa-clock">
+                            </i> 
+                        </div> 
+                        <div> 
+                            <div class="text-xs text-gray-400 uppercase font-semibold">
+                                Time
+                            </div> 
+                            <div class="font-bold text-sm text-amber-200">
+                                7:00 PM Until the Witching Hour
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="flex items-center gap-3 text-purple-200"> 
+                        <div class="w-10 h-10 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-orange-400"> 
+                            <i class="fa-solid fa-location-dot">
+                            </i> 
+                        </div> 
+                        <div> 
+                            <div class="text-xs text-gray-400 uppercase font-semibold">
+                                Location
+                            </div> 
+                            <div class="font-bold text-sm text-amber-200">
+                                5457 Fiddler Cove Way, Sacramento CA, 95835
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+                <!-- Spooky Note --> 
+                <p class="text-center text-xs text-gray-300 italic mb-6"> 
+                    Costumes are strictly mandatory! Shoes are allowed inside the house. Potluck style! Bring a dish or drinks to share with the spirits. 
+                </p> 
+                <!-- Action Buttons --> 
+                <div class="flex gap-3"> 
+                    <button onclick="openRSVPModal()" class="flex-1 py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.5)] transition-all flex items-center justify-center gap-2"> 
+                        <i class="fa-solid fa-ghost">
+                        </i> 
+                        RSVP Now 
+                    </button> 
+                    <button onclick="closeModal()" class="px-5 py-3 bg-purple-900/80 hover:bg-purple-800 text-purple-200 font-semibold rounded-xl border border-purple-600/50 transition-all"> 
+                        Close 
+                    </button> 
+                </div> 
+            </div> 
+        </div> 
+        <!-- RSVP Modal --> 
+        <div id="rsvpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300"> 
+            <div class="bg-[#150a21] border-2 border-purple-500 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 shadow-[0_0_40px_rgba(147,51,234,0.5)] relative"> 
+                <button onclick="closeRSVPModal()" class="absolute top-4 right-4 text-gray-400 hover:text-orange-400 text-xl"> 
+                    <i class="fa-solid fa-xmark">
+                    </i> 
+                </button> 
+                <h3 class="font-creepster text-3xl text-orange-500 mb-2 text-center">
+                    CLAIM YOUR SOUL
+                </h3> 
+                <p class="text-xs text-purple-300 text-center mb-6">
+                    Let the host know if you'll survive the night.
+                </p> 
+                <form id="rsvpForm" onsubmit="submitRSVP(event)" class="space-y-4"> 
+                    <div> 
+                        <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">
+                            Your Mortal Name
+                        </label> 
+                        <input type="text" id="guestName" required class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. Count Dracula"> 
+                    </div> 
+                    <div> 
+                        <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">
+                            Will you attend?
+                        </label> 
+                        <select id="guestStatus" class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 text-sm"> 
+                            <option value="attending">
+                                Yes, I'll risk my soul
+                            </option> 
+                            <option value="maybe">
+                                Undecided (Haunted)
+                            </option> 
+                            <option value="declined">
+                                Too scared to attend
+                            </option> 
+                        </select> 
+                    </div> 
+                    <div> 
+                        <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">
+                            Costume Choice
+                        </label> 
+                        <input type="text" id="guestCostume" class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. Zombie Bride, Witch, Skeleton"> 
+                    </div> 
+                    <div>
+                        <label for="guestPotluck" class="block text-xs font-semibold text-purple-300 uppercase mb-1">
+                            What will you bring to the potluck? (Required)
+                        </label>
+                        <input type="text" id="guestPotluck" required pattern=".*\S.*" title="Please enter what you plan to bring." class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. a spooky dessert, chips, or drinks">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-all mt-2"> 
+                        Submit RSVP to the Spirits 
+                    </button>
+                </form> 
+            </div> 
+        </div> 
+        <!-- Success Toast Message Box (Custom instead of alert) --> 
+        <div id="toast" class="fixed bottom-6 right-6 bg-[#1a0b2e] border-2 border-orange-500 text-white px-6 py-4 rounded-xl shadow-[0_0_25px_rgba(255,102,0,0.6)] transform translate-y-32 opacity-0 transition-all duration-500 z-50 flex items-center gap-3"> 
+            <i class="fa-solid fa-ghost text-orange-400 text-2xl"></i> 
+            <div> 
+                <div class="font-bold text-orange-400 text-sm" id="toastTitle">
+                    RSVP Received!
+                </div> 
+                <div class="text-xs text-purple-200" id="toastDesc">
+                    Your soul is officially registered for the party.
+                </div> 
+            </div> 
+        </div> 
+        <!-- Footer --> 
+        <footer class="z-10 text-center py-4 text-xs text-purple-400/70"> 
+                Created for a spooktacular night • Happy Halloween 2026 
+        </footer> 
+        <script>
+            let isOpened = false;
+
+            async function toggleHalloweenMusic() {
+                const button = document.getElementById('musicToggle');
+                const icon = document.getElementById('musicToggleIcon');
+                const label = document.getElementById('musicToggleLabel');
+                const status = document.getElementById('musicStatus');
+                const audio = document.getElementById('halloweenAudio');
+                if (!button || !icon || !label || !status || !audio) return;
+
+                if (!audio.paused) {
+                    audio.pause();
+                    button.setAttribute('aria-pressed', 'false');
+                    icon.className = 'fa-solid fa-play';
+                    label.textContent = 'Play Halloween music';
+                    status.textContent = 'Music is paused';
+                    return;
+                }
+
+                try {
+                    await audio.play();
+                    button.setAttribute('aria-pressed', 'true');
+                    icon.className = 'fa-solid fa-pause';
+                    label.textContent = 'Pause Halloween music';
+                    status.textContent = 'Playing Whisper of Ghost Monument';
+                } catch (error) {
+                    status.textContent = 'Could not play the audio file. Check that it is available in the assets folder.';
+                    console.error('Unable to play Halloween music:', error);
+                }
+            }
+
+            function openEnvelope() {
+                if (isOpened) {
+                    openModal();
+                    return;
+                }
+
+                const envelope = document.getElementById('envelope');
+                const instruction = document.getElementById('instruction-text');
+                const actionButtons = document.getElementById('action-buttons');
+
+                if (envelope) envelope.classList.add('open');
+                isOpened = true;
+
+                if (instruction) {
+                    instruction.innerHTML = '<i class="fa-solid fa-sparkles text-amber-400"></i> The letter has been unsealed!';
+                    instruction.classList.remove('animate-bounce');
+                }
+
+                setTimeout(() => {
+                    if (actionButtons) {
+                        actionButtons.classList.remove('hidden');
+                        actionButtons.classList.add('flex');
+                    }
+                    openModal();
+                }, 800);
+            }
+
+            function resetEnvelope() {
+                const envelope = document.getElementById('envelope');
+                const instruction = document.getElementById('instruction-text');
+                const actionButtons = document.getElementById('action-buttons');
+
+                if (envelope) envelope.classList.remove('open');
+                isOpened = false;
+
+                if (instruction) {
+                    instruction.innerHTML = '<i class="fa-solid fa-hand-pointer text-orange-400"></i> Click the wax seal to open your invitation!';
+                    instruction.classList.add('animate-bounce');
+                }
+
+                if (actionButtons) {
+                    actionButtons.classList.add('hidden');
+                    actionButtons.classList.remove('flex');
+                }
+
+                closeModal();
+            }
+
+            function openModal() {
+                const modal = document.getElementById('invitationModal');
+                const modalContent = document.getElementById('modalContent');
+
+                if (modal && modalContent) {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('scale-95');
+                    modalContent.classList.add('scale-100');
+                }
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('invitationModal');
+                const modalContent = document.getElementById('modalContent');
+
+                if (modal && modalContent) {
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('scale-100');
+                    modalContent.classList.add('scale-95');
+                }
+            }
+
+            function openRSVPModal() {
+                closeModal();
+                const rsvpModal = document.getElementById('rsvpModal');
+                if (rsvpModal) {
+                    rsvpModal.classList.remove('opacity-0', 'pointer-events-none');
+                }
+            }
+
+            function closeRSVPModal() {
+                const rsvpModal = document.getElementById('rsvpModal');
+                if (rsvpModal) {
+                    rsvpModal.classList.add('opacity-0', 'pointer-events-none');
+                }
+            }
+
+            async function submitRSVP(event) {
+                event.preventDefault();
+                const name = document.getElementById('guestName')?.value?.trim() || 'Mortal';
+                const status = document.getElementById('guestStatus')?.value || 'attending';
+                const costume = document.getElementById('guestCostume')?.value?.trim() || 'Not provided';
+                const potluck = document.getElementById('guestPotluck')?.value?.trim() || '';
+                const toast = document.getElementById('toast');
+                const toastTitle = document.getElementById('toastTitle');
+                const toastDesc = document.getElementById('toastDesc');
+                const rsvpForm = document.getElementById('rsvpForm');
+                const submitButton = rsvpForm?.querySelector('button[type="submit"]');
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Sending RSVP...';
+                }
+
+                try {
+                    const response = await fetch('https://formsubmit.co/ajax/frozen711.vr.vr@gmail.com', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                        body: JSON.stringify({
+                            _subject: 'Halloween Bash RSVP',
+                            name,
+                            Attendance: status,
+                            Costume: costume,
+                            Potluck: potluck
+                        })
+                    });
+                    const result = await response.json();
+                    if (!response.ok || (result.success !== true && result.success !== 'true')) {
+                        throw new Error(result.message || 'Email service rejected the RSVP.');
+                    }
+
+                    closeRSVPModal();
+                    if (toastTitle && toastDesc) {
+                        if (status === 'attending') {
+                            toastTitle.innerText = `Welcome to the Coven, ${name}!`;
+                            toastDesc.innerText = 'Your RSVP has been sent to the host.';
+                        } else if (status === 'maybe') {
+                            toastTitle.innerText = `The spirits await your decision, ${name}...`;
+                            toastDesc.innerText = 'Your RSVP has been sent to the host.';
+                        } else {
+                            toastTitle.innerText = `A coward flees, ${name}!`;
+                            toastDesc.innerText = 'Your RSVP has been sent to the host.';
+                        }
+                    }
+
+                    if (toast) {
+                        toast.classList.remove('translate-y-32', 'opacity-0');
+                        setTimeout(() => toast.classList.add('translate-y-32', 'opacity-0'), 5000);
+                    }
+                    if (rsvpForm) rsvpForm.reset();
+                } catch (error) {
+                    if (toastTitle && toastDesc) {
+                        toastTitle.innerText = 'RSVP could not be sent';
+                        toastDesc.innerText = error instanceof Error
+                            ? error.message
+                            : 'Please try again in a moment.';
+                    }
+                    if (toast) {
+                        toast.classList.remove('translate-y-32', 'opacity-0');
+                        setTimeout(() => toast.classList.add('translate-y-32', 'opacity-0'), 5000);
+                    }
+                    console.error('Unable to send RSVP email:', error);
+                } finally {
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Submit RSVP to the Spirits';
+                    }
+                }
+            }
+        </script>
+    </body> 
+</html>
