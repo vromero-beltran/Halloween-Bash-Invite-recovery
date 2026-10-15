@@ -227,7 +227,7 @@
                         <span id="guestPotluckLabel" class="block text-xs font-semibold text-purple-300 uppercase mb-1">
                             What will you bring to the potluck? (Choose all that apply)
                         </span>
-                        <details class="group">
+                        <details id="potluckDropdown" class="group">
                             <summary class="cursor-pointer list-none w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 flex items-center justify-between">
                                 <span id="potluckSelectionSummary">Select one or more items</span>
                                 <i class="fa-solid fa-chevron-down text-purple-300 transition-transform group-open:rotate-180" aria-hidden="true"></i>
@@ -434,6 +434,7 @@
                 const submitButton = rsvpForm?.querySelector('button[type="submit"]');
 
                 if (potluckChoices.length === 0) {
+                    document.getElementById('potluckDropdown').open = true;
                     document.querySelector('input[name="potluckChoices"]')?.setCustomValidity('Choose at least one potluck item.');
                     document.querySelector('input[name="potluckChoices"]')?.reportValidity();
                     return;
@@ -441,6 +442,7 @@
 
                 if (potluckChoices.some(choice => choice.value === 'Other') && !otherPotluck) {
                     const otherInput = document.getElementById('guestPotluckOther');
+                    document.getElementById('potluckDropdown').open = true;
                     otherInput?.setCustomValidity('Please enter what you plan to bring.');
                     otherInput?.reportValidity();
                     return;
@@ -515,11 +517,10 @@
                 const summary = document.getElementById('potluckSelectionSummary');
                 const otherInput = document.getElementById('guestPotluckOther');
 
-                choices[0]?.setCustomValidity(selectedChoices.length ? '' : 'Choose at least one potluck item.');
+                choices[0]?.setCustomValidity('');
                 otherInput?.setCustomValidity('');
                 if (otherInput) {
                     otherInput.disabled = !otherSelected;
-                    otherInput.required = otherSelected;
                     otherInput.classList.toggle('hidden', !otherSelected);
                 }
                 if (summary) {
