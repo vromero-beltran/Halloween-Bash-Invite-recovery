@@ -224,10 +224,59 @@
                         <input type="text" id="guestCostume" class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. Zombie Bride, Witch, Skeleton"> 
                     </div> 
                     <div>
-                        <label for="guestPotluck" class="block text-xs font-semibold text-purple-300 uppercase mb-1">
-                            What will you bring to the potluck? (Required)
-                        </label>
-                        <input type="text" id="guestPotluck" required pattern=".*\S.*" title="Please enter what you plan to bring." class="w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="e.g. a spooky dessert, chips, or drinks">
+                        <span id="guestPotluckLabel" class="block text-xs font-semibold text-purple-300 uppercase mb-1">
+                            What will you bring to the potluck? (Choose all that apply)
+                        </span>
+                        <details class="group">
+                            <summary class="cursor-pointer list-none w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 flex items-center justify-between">
+                                <span id="potluckSelectionSummary">Select one or more items</span>
+                                <i class="fa-solid fa-chevron-down text-purple-300 transition-transform group-open:rotate-180" aria-hidden="true"></i>
+                            </summary>
+                            <fieldset aria-labelledby="guestPotluckLabel" class="mt-2 p-3 bg-purple-950/90 border border-purple-700/60 rounded-lg space-y-2">
+                                <legend class="sr-only">Potluck items</legend>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Jalapeno poppers" class="accent-orange-500">
+                                    Jalapeno poppers
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Buffalo chicken dip" class="accent-orange-500">
+                                    Buffalo chicken dip
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Dessert" class="accent-orange-500">
+                                    Dessert
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Salad" class="accent-orange-500">
+                                    Salad
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Tequila" class="accent-orange-500">
+                                    Tequila
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Beer" class="accent-orange-500">
+                                    Beer
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Non-alcoholic drinks" class="accent-orange-500">
+                                    Non-alcoholic drinks
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Ice bags" class="accent-orange-500">
+                                    Ice bags!
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Mixers" class="accent-orange-500">
+                                    Mixers
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white">
+                                    <input type="checkbox" name="potluckChoices" value="Other" class="accent-orange-500">
+                                    Other
+                                </label>
+                                <input type="text" id="guestPotluckOther" class="hidden w-full bg-purple-950/60 border border-purple-700/60 rounded-lg px-3 py-2 text-white placeholder-purple-500 focus:outline-none focus:border-orange-500 text-sm" placeholder="What else will you bring?" aria-label="Other potluck item" disabled>
+                            </fieldset>
+                        </details>
                     </div>
                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-all mt-2"> 
                         Submit RSVP to the Spirits 
@@ -373,12 +422,29 @@
                 const name = document.getElementById('guestName')?.value?.trim() || 'Mortal';
                 const status = document.getElementById('guestStatus')?.value || 'attending';
                 const costume = document.getElementById('guestCostume')?.value?.trim() || 'Not provided';
-                const potluck = document.getElementById('guestPotluck')?.value?.trim() || '';
+                const potluckChoices = Array.from(document.querySelectorAll('input[name="potluckChoices"]:checked'));
+                const otherPotluck = document.getElementById('guestPotluckOther')?.value?.trim() || '';
+                const potluck = potluckChoices
+                    .map(choice => choice.value === 'Other' ? `Other: ${otherPotluck}` : choice.value)
+                    .join(', ');
                 const toast = document.getElementById('toast');
                 const toastTitle = document.getElementById('toastTitle');
                 const toastDesc = document.getElementById('toastDesc');
                 const rsvpForm = document.getElementById('rsvpForm');
                 const submitButton = rsvpForm?.querySelector('button[type="submit"]');
+
+                if (potluckChoices.length === 0) {
+                    document.querySelector('input[name="potluckChoices"]')?.setCustomValidity('Choose at least one potluck item.');
+                    document.querySelector('input[name="potluckChoices"]')?.reportValidity();
+                    return;
+                }
+
+                if (potluckChoices.some(choice => choice.value === 'Other') && !otherPotluck) {
+                    const otherInput = document.getElementById('guestPotluckOther');
+                    otherInput?.setCustomValidity('Please enter what you plan to bring.');
+                    otherInput?.reportValidity();
+                    return;
+                }
 
                 if (submitButton) {
                     submitButton.disabled = true;
@@ -421,6 +487,7 @@
                         setTimeout(() => toast.classList.add('translate-y-32', 'opacity-0'), 5000);
                     }
                     if (rsvpForm) rsvpForm.reset();
+                    updatePotluckSelection();
                 } catch (error) {
                     if (toastTitle && toastDesc) {
                         toastTitle.innerText = 'RSVP could not be sent';
@@ -440,6 +507,35 @@
                     }
                 }
             }
+
+            function updatePotluckSelection() {
+                const choices = Array.from(document.querySelectorAll('input[name="potluckChoices"]'));
+                const selectedChoices = choices.filter(choice => choice.checked);
+                const otherSelected = selectedChoices.some(choice => choice.value === 'Other');
+                const summary = document.getElementById('potluckSelectionSummary');
+                const otherInput = document.getElementById('guestPotluckOther');
+
+                choices[0]?.setCustomValidity(selectedChoices.length ? '' : 'Choose at least one potluck item.');
+                otherInput?.setCustomValidity('');
+                if (otherInput) {
+                    otherInput.disabled = !otherSelected;
+                    otherInput.required = otherSelected;
+                    otherInput.classList.toggle('hidden', !otherSelected);
+                }
+                if (summary) {
+                    summary.textContent = selectedChoices.length
+                        ? `${selectedChoices.length} item${selectedChoices.length === 1 ? '' : 's'} selected`
+                        : 'Select one or more items';
+                }
+            }
+
+            document.querySelectorAll('input[name="potluckChoices"]').forEach(choice => {
+                choice.addEventListener('change', updatePotluckSelection);
+            });
+            document.getElementById('guestPotluckOther')?.addEventListener('input', event => {
+                event.currentTarget.setCustomValidity('');
+            });
+            updatePotluckSelection();
         </script>
     </body> 
 </html>
